@@ -1,5 +1,9 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // if you create a config file later
+const sequelize =
+  process.env.NODE_ENV === 'test'
+    ? require('../config/testDatabase')
+    : require('../config/database');
+
 
 const Plant = sequelize.define('Plant', {
   name: {

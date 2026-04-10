@@ -1,21 +1,16 @@
 require('dotenv').config();
 const express = require('express');
-const { Sequelize } = require('sequelize');
-
 const app = express();
 
 // middleware
 app.use(express.json());
 
-// plant routes
-const plantRoutes = require('./routes/plantRoutes');
-app.use('/plants', plantRoutes);
+const sequelize = require('./config/database');
 
-// database connection (SQLite)
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database/database.sqlite'
-});
+// import models 
+require('./database/User');
+require('./database/Plant');
+require('./database/CareLog');
 
 // test DB connection
 async function testConnection() {
@@ -28,13 +23,32 @@ async function testConnection() {
 }
 testConnection();
 
+// ROUTES
+const plantRoutes = require('./routes/plantRoutes');
+const userRoutes = require('./routes/userRoutes');
+const careLogRoutes = require('./routes/careLogRoutes');
+
+app.use('/plants', plantRoutes);
+app.use('/users', userRoutes);
+app.use('/carelogs', careLogRoutes);
+
 // basic route
 app.get('/', (req, res) => {
   res.json({ message: 'API is running' });
 });
 
-// start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server error' });
 });
+
+// start server 
+const PORT = process.env.PORT || 3000;
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
