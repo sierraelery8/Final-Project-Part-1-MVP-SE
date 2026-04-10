@@ -1,1 +1,1 @@
-# Final-Project-Part-1-MVP-S.E.
+# Final-Project-Part-1-MVP-SE
