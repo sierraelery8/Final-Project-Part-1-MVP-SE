@@ -1,54 +1,35 @@
+// server.js
 require('dotenv').config();
-const express = require('express');
-const app = express();
-
-// middleware
-app.use(express.json());
-
+const app = require('./app');
 const sequelize = require('./config/database');
 
-// import models 
+// import models (ensures Sequelize registers them)
 require('./database/User');
 require('./database/Plant');
 require('./database/CareLog');
 
-// test DB connection
-async function testConnection() {
+// test DB connection + sync
+async function startServer() {
   try {
     await sequelize.authenticate();
     console.log('Database connected successfully');
+
+    await sequelize.sync();
+    console.log('Models synchronized');
+
+    const PORT = process.env.PORT || 3000;
+
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    }
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Unable to start server:', error);
+    process.exit(1);
   }
 }
-testConnection();
 
-// ROUTES
-const plantRoutes = require('./routes/plantRoutes');
-const userRoutes = require('./routes/userRoutes');
-const careLogRoutes = require('./routes/careLogRoutes');
-
-app.use('/plants', plantRoutes);
-app.use('/users', userRoutes);
-app.use('/carelogs', careLogRoutes);
-
-// basic route
-app.get('/', (req, res) => {
-  res.json({ message: 'API is running' });
-});
-
-// global error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
-// start server 
-const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
+startServer();
 
 module.exports = app;
