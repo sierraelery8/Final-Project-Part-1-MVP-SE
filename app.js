@@ -8,7 +8,7 @@ app.use(express.json());
 // ROUTES
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/plants", require("./routes/plantRoutes"));
-app.use("/carelogs", require("./routes/carelogRoutes"));
+app.use("/carelogs", require("./routes/careLogRoutes"));
 
 // GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
