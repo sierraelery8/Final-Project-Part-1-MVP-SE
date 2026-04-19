@@ -10,7 +10,10 @@ app.use(express.json());
 const plantRoutes = require('./routes/plantRoutes');
 const userRoutes = require('./routes/userRoutes');
 const careLogRoutes = require('./routes/careLogRoutes');
+const authRoutes = require("./routes/authRoutes");
 
+
+app.use("/auth", authRoutes);
 app.use('/plants', plantRoutes);
 app.use('/users', userRoutes);
 app.use('/carelogs', careLogRoutes);
