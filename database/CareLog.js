@@ -19,4 +19,5 @@ const CareLog = sequelize.define("CareLog", {
   },
 });
 
+
 module.exports = CareLog;
