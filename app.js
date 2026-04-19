@@ -5,6 +5,10 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Plant Care API is running" });
+});
+
 // ROUTES
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/plants", require("./routes/plantRoutes"));
