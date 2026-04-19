@@ -1,34 +1,23 @@
-const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+const { DataTypes } = require("sequelize");
 const sequelize =
-  process.env.NODE_ENV === 'test'
-    ? require('../config/testDatabase')
-    : require('../config/database');
+  process.env.NODE_ENV === "test"
+    ? require("../config/testDatabase")
+    : require("../config/database");
 
-const User = sequelize.define('User', {
-  username: {
+const User = sequelize.define("User", {
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
+  passwordHash: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
   },
   role: {
     type: DataTypes.STRING,
-    defaultValue: 'user'
-  }
+    defaultValue: "user",
+  },
 });
-
-// hash password before saving
-User.beforeCreate(async (user) => {
-  user.password = await bcrypt.hash(user.password, 10);
-});
-
-// method for checking password
-User.prototype.validPassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
 
 module.exports = User;

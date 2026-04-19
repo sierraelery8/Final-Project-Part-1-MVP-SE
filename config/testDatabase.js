@@ -1,7 +1,7 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 
-module.exports = new Sequelize({
-  dialect: 'sqlite',
-  storage: ':memory:',
-  logging: false
+const sequelize = new Sequelize("sqlite::memory:", {
+  logging: false,
 });
+
+module.exports = sequelize;

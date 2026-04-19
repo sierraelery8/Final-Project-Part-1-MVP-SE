@@ -1,73 +1,66 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Plant = require('../database/Plant');
-const auth = require('../middleware/auth');
 
+const plantService = require("../services/plantService");
+const validateRequest = require("../middleware/validateRequest");
+const { createPlantSchema, updatePlantSchema } = require("../validation/plantSchemas");
+const { requireAuth } = require("../middleware/authMiddleware");
+const { requireOwnerOrAdmin } = require("../middleware/roleMiddleware");
 
-// GET all plants
-router.get('/', auth, async (req, res) => {
+// Protect all routes
+router.use(requireAuth);
+
+// GET /plants
+router.get("/", async (req, res, next) => {
   try {
-    const plants = await Plant.findAll();
+    const plants = await plantService.listPlantsForUser(req.user.id, req.query);
     res.json(plants);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch plants' });
+  } catch (err) {
+    next(err);
   }
 });
 
-// GET plant by ID
-router.put('/:id', auth, async (req, res) => {
-  try {
-    const plant = await Plant.findByPk(req.params.id);
+// GET /plants/:id
+router.get("/:id", requireOwnerOrAdmin, async (req, res) => {
+  res.json(req.plant);
+});
 
-    if (!plant) return res.status(404).json({ error: 'Plant not found' });
-
-    if (plant.userId !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Not authorized to update this plant' });
+// POST /plants
+router.post(
+  "/",
+  validateRequest(createPlantSchema),
+  async (req, res, next) => {
+    try {
+      const plant = await plantService.createPlant(req.user.id, req.body);
+      res.status(201).json(plant);
+    } catch (err) {
+      next(err);
     }
-
-    await plant.update(req.body);
-    res.json(plant);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to update plant' });
   }
-});
+);
 
-// CREATE a plant
-router.post('/', async (req, res) => {
-  try {
-    const plant = await Plant.create(req.body);
-    res.status(201).json(plant);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create plant' });
+// PUT /plants/:id
+router.put(
+  "/:id",
+  requireOwnerOrAdmin,
+  validateRequest(updatePlantSchema),
+  async (req, res, next) => {
+    try {
+      const updated = await plantService.updatePlant(req.plant, req.body);
+      res.json(updated);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
-// UPDATE a plant
-router.put('/:id', async (req, res) => {
+// DELETE /plants/:id
+router.delete("/:id", requireOwnerOrAdmin, async (req, res, next) => {
   try {
-    const plant = await Plant.findByPk(req.params.id);
-    if (!plant) return res.status(404).json({ error: 'Plant not found' });
-
-    await plant.update(req.body);
-    res.json(plant);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update plant' });
-  }
-});
-
-// DELETE a plant
-router.delete('/:id', async (req, res) => {
-  try {
-    const plant = await Plant.findByPk(req.params.id);
-    if (plant.userId !== req.user.id && req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Not authorized to delete this plant' });
-}
-
-    await plant.destroy();
-    res.json({ message: 'Plant deleted' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete plant' });
+    await plantService.deletePlant(req.plant);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
   }
 });
 

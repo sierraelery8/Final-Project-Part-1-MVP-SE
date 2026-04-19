@@ -1,34 +1,21 @@
-// app.js
-require('dotenv').config();
-const express = require('express');
+const express = require("express");
 const app = express();
+const cors = require("cors");
 
-// middleware
+app.use(cors());
 app.use(express.json());
 
 // ROUTES
-const plantRoutes = require('./routes/plantRoutes');
-const userRoutes = require('./routes/userRoutes');
-const careLogRoutes = require('./routes/careLogRoutes');
-const authRoutes = require("./routes/authRoutes");
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/plants", require("./routes/plantRoutes"));
+app.use("/carelogs", require("./routes/carelogRoutes"));
 
-
-app.use("/auth", authRoutes);
-app.use('/plants', plantRoutes);
-app.use('/users', userRoutes);
-app.use('/carelogs', careLogRoutes);
-
-// basic route
-app.get('/', (req, res) => {
-  res.json({ message: 'API is running' });
-});
-
-// global error handler (centralized)
+// GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
   console.error(err);
   const status = err.status || 500;
   res.status(status).json({
-    error: err.message || 'Internal server error'
+    error: err.message || "Internal server error",
   });
 });
 

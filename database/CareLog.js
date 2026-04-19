@@ -1,24 +1,22 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
+
 const sequelize =
-  process.env.NODE_ENV === 'test'
-    ? require('../config/testDatabase')
-    : require('../config/database');
+  process.env.NODE_ENV === "test"
+    ? require("../config/testDatabase")
+    : require("../config/database");
 
-const Plant = require('./Plant');
-const User = require('./User');
-
-const CareLog = sequelize.define('CareLog', {
+const CareLog = sequelize.define("CareLog", {
   action: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   notes: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  }
+    type: DataTypes.STRING,
+  },
+  plantId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
-
-CareLog.belongsTo(Plant, { foreignKey: 'plantId' });
-CareLog.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = CareLog;
