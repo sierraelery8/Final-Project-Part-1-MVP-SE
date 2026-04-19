@@ -6,14 +6,34 @@ A RESTful backend service that allows users to manage their plants, track their 
 
 ## **Project Overview**
 
-The **Plant Care Tracker API** is designed to help plant owners stay organized and be consistent with plant care. Users can log their plants, track watering and fertilizing schedules, record growth notes, and maintain a history of care.
+The **Plant Care Tracker API** helps plant owners stay organized and consistent with plant care routines. Users can:
 
-This API solves a real‑world problem: people often forget plant care routines, leading to unhealthy plants. By centralizing plant data and care logs, users can maintain healthier plants with less stress.
+- Log their plants
 
+- Track watering, fertilizing, and pruning
+
+- Record notes
+
+- Maintain a care history
+
+This solves a real‑world problem: people forget plant care schedules, leading to unhealthy plants. This API centralizes plant data so users can maintain healthier plants with less stress.
+
+## **Live Deployment** 
+Render URL:  
+👉 https://final-project-part-1-mvp-se-1.onrender.com
+
+Example health check:
+
+Code
+GET https://final-project-part-1-mvp-se-1.onrender.com/api/health
 
 ## **Target Users**
 
-The main users would be plant owners, gardeners, and plant enthusiasts… It could also be useful for small plant shops or plant‑sitting services.
+- Plant owners
+- Gardeners
+- Plant hobbyists
+- Small plant shops
+- Plant‑sitting services
 
 
 ## **Tech Stack**
@@ -32,23 +52,30 @@ The main users would be plant owners, gardeners, and plant enthusiasts… It cou
 
 /config
   database.js
+
 /database
   User.js
   Plant.js
   CareLog.js
+
 /middleware
   auth.js
   requireRole.js
+
 /routes
   userRoutes.js
   plantRoutes.js
   careLogRoutes.js
+
 /tests
   user.test.js
   plant.test.js
   carelog.test.js
+
+app.js
 server.js
 README.md
+```
 ```
 
 ## **Authentication**
@@ -64,7 +91,6 @@ The API uses **JWT-based authentication**.
 Authorization: Bearer <token>
 ```
 
-
 ## **Role-Based Access Control (RBAC)**
 
 Your project supports two roles:
@@ -77,11 +103,11 @@ Admin-only capabilities:
 - Delete any plant
 
 User-only capabilities:
-- Update/delete only their own plants
-- Update/delete only their own care logs
-
-
-## **Data Models**
+- Manage only their own plants
+- Manage only their own care logs
+```
+```
+## **Data Models** ##
 
 ### **User**
 - id  
@@ -107,7 +133,7 @@ User-only capabilities:
 - notes  
 - date  
 
----
+```
 
 ## **Setup/ Installation**
 
@@ -142,7 +168,13 @@ npm test
 
 ## **API Endpoints**
 
----
+All endpoints are prefixed with:
+
+Code
+/api
+
+```
+```
 
 # **User Routes**
 
@@ -159,6 +191,7 @@ POST /users/login
 ### **Delete User (admin only)**
 ```
 DELETE /users/:id
+```
 ```
 
 
@@ -189,37 +222,37 @@ DELETE /plants/:id
 
 ### **Create Care Log**
 ```
-POST /carelogs
+POST /api/carelogs
 ```
 
 ### **Get All Care Logs**
 ```
-GET /carelogs
+GET /api/carelogs
 ```
 
 ### **Get Care Logs for a Plant**
 ```
-GET /carelogs/plant/:plantId
+GET /api/carelogs/plant/:plantId
 ```
 
 ### **Update Care Log**
 ```
-PUT /carelogs/:id
+PUT /api/carelogs/:id
 ```
 
 ### **Delete Care Log**
 ```
-DELETE /carelogs/:id
+DELETE /api/carelogs/:id
 ```
 
 
 ## **Testing**
 
-My project includes full Jest + Supertest coverage:
+My project includes Jest + Supertest tests for:
 
-- User tests  
-- Plant tests  
-- CareLog tests  
+- Users
+- Plants
+- CareLogs 
 
 Run:
 
@@ -227,23 +260,23 @@ Run:
 npm test
 ```
 
-All tests should pass:
-
-```
-PASS tests/user.test.js
-PASS tests/plant.test.js
-PASS tests/carelog.test.js
-```
-
 ## **Deployment**
 
-Deploy using **Render**.
+Deployed using Render with:
+
+- PostgreSQL database
+
+- Environment variables
+
+- Production DATABASE_URL
+
+- process.env.PORT binding
 
 
 ## **Future Enhancements**
 
-- Reminder system for watering/fertilizing  
-- Email or SMS notifications  
-- Plant photo uploads  
-- Growth tracking with charts  
-- Frontend dashboard  
+- Watering/fertilizing reminders
+- Email or SMS notifications
+- Plant photo uploads
+- Growth tracking
+- Frontend dashboard 
